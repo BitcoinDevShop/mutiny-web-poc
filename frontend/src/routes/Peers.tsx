@@ -1,7 +1,6 @@
 import Copy from "@components/Copy";
 import { NodeManagerContext } from "@components/GlobalStateProvider";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import takeN from "@util/takeN";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Close from "../components/Close"
@@ -9,6 +8,7 @@ import PageTitle from "../components/PageTitle"
 import ScreenMain from "../components/ScreenMain"
 import { ReactComponent as EjectIcon } from "../images/icons/eject.svg"
 import { MutinyPeer } from "node-manager";
+import CodeTruncator from "@components/CodeTruncator";
 
 function SinglePeer({ peer }: { peer: MutinyPeer }) {
 
@@ -55,7 +55,7 @@ function SinglePeer({ peer }: { peer: MutinyPeer }) {
                 </div>
                 <div className="flex-1 font-mono overflow-ellipsis">
                     <h3 className="text-lg">
-                        {takeN(peer.pubkey, 15)}
+                        <CodeTruncator code={peer.pubkey} truncStart={990}/>
                     </h3>
                     {peer.is_connected && <h5 className="text-green">Connected</h5>}
                     {!peer.is_connected && <h5 className="text-red">Disconnected</h5>}

@@ -4,12 +4,12 @@ import { getExistingSettings, NodeManagerContext, NodeManagerSettingStrings } fr
 import MutinyToaster from "@components/MutinyToaster";
 import { useQuery } from "@tanstack/react-query";
 import { getFirstNode, getHostname, toastAnything } from "@util/dumb";
-import takeN from "@util/takeN";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Close from "../components/Close";
 import PageTitle from "../components/PageTitle";
 import { inputStyle, mainWrapperStyle } from "../styles";
+import CodeTruncator from "@components/CodeTruncator";
 
 export default function ConnectPeer() {
 	const { nodeManager } = useContext(NodeManagerContext);
@@ -53,7 +53,6 @@ export default function ConnectPeer() {
 				<PageTitle title="Connect to peer" theme="red"></PageTitle>
 				<Close to="/manager/peers" />
 			</header>
-
 			<main>
 				<form onSubmit={handleSubmit} className={mainWrapperStyle()}>
 					<div />
@@ -64,7 +63,7 @@ export default function ConnectPeer() {
 								<pre className="flex-1">
 									{/* TODO: learn how to make this responsive and actually do overflow right */}
 									<code className="break-all whitespace-nowrap">
-										{takeN(connectionString, 28)}
+										<CodeTruncator code={connectionString} truncStart={1020}/>
 									</code>
 								</pre>
 								<div className="flex-0">

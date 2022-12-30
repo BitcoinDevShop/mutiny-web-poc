@@ -3,10 +3,10 @@ import Copy from "../components/Copy";
 import { useContext, useEffect, useState } from "react";
 import { NodeManagerContext } from "@components/GlobalStateProvider";
 import { useQuery } from "@tanstack/react-query";
-import takeN from "@util/takeN";
 import { useNavigate } from "react-router-dom";
 import bip21 from "bip21";
 import { MutinyBip21 } from "@routes/Send";
+import CodeTruncator from "./CodeTruncator";
 
 export type QRMode = "lightning" | "onchain" | "bip21";
 
@@ -77,10 +77,10 @@ export default function ReceiveUnified({ bip21String, mode }: { bip21String: str
                     <div className="bg-[#ffffff] p-4">
                         <QRCode level="M" value={activeString} />
                     </div>
-                    <div className="flex items-center gap-2 w-full">
+                    <div className="flex items-center gap-2 w-fit">
                         <pre className="flex-1">
                             <code className="break-all whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                {takeN(activeString, 28)}
+                                <CodeTruncator code={activeString}/>
                             </code>
                         </pre>
                         <div className="flex-0">

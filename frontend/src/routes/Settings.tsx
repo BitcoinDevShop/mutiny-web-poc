@@ -4,11 +4,11 @@ import MutinyToaster from "@components/MutinyToaster";
 import SettingStringsEditor from "@components/SettingStringsEditor";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toastAnything } from "@util/dumb";
-import takeN from "@util/takeN";
 import { useContext, useState } from "react";
 import Close from "../components/Close"
 import PageTitle from "../components/PageTitle"
 import ScreenMain from "../components/ScreenMain"
+import CodeTruncator from "../components/CodeTruncator"
 
 import { ReactComponent as Eye } from "../images/icons/eye.svg"
 import { ReactComponent as EyeClosed } from "../images/icons/eye-closed.svg"
@@ -147,7 +147,9 @@ function Settings() {
                                 <p className="text-2xl font-light">Node Pubkey</p>
                                 <div className="flex items-center gap-4">
                                     <pre>
-                                        <code>{takeN(nodes[0], 25)}</code>
+                                        <code>
+                                            <CodeTruncator code={nodes[0]} truncStart={990}/>
+                                        </code>
                                     </pre>
                                     <Copy copyValue={nodes[0]} />
                                 </div>
