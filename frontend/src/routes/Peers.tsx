@@ -2,48 +2,44 @@ import Copy from "@components/Copy";
 import { NodeManagerContext } from "@components/GlobalStateProvider";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import takeN from "@util/takeN";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Close from "../components/Close"
 import PageTitle from "../components/PageTitle"
 import { ReactComponent as EjectIcon } from "../images/icons/eject.svg"
 import { MutinyPeer } from "node-manager";
 import { mainWrapperStyle } from "../styles";
+import ConfirmDialog from "@components/ConfirmDialog";
 
 function SinglePeer({ peer }: { peer: MutinyPeer }) {
 
     const queryClient = useQueryClient()
     const { nodeManager } = useContext(NodeManagerContext);
 
-    async function handleDisconnectPeer() {
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [confirmMessage, setConfirmMessage] = useState("");
+
+    async function confirmPeerAction() {
         const myNodes = await nodeManager?.list_nodes();
+        const myNode = myNodes[0]
 
-        console.log(myNodes);
-
-        if (window.confirm("Are you sure you want to disconnect this peer?")) {
-            const myNode = myNodes[0]
+        if (peer.is_connected) {
             await nodeManager?.disconnect_peer(myNode, peer.pubkey);
-            queryClient.invalidateQueries({ queryKey: ['peers'] })
-        }
-    }
-
-    async function handleDeletePeer() {
-        const myNodes = await nodeManager?.list_nodes();
-
-        console.log(myNodes);
-
-        if (window.confirm("Are you sure you want to delete this peer?")) {
-            const myNode = myNodes[0]
+        } else {
             await nodeManager?.delete_peer(myNode, peer.pubkey);
-            queryClient.invalidateQueries({ queryKey: ['peers'] })
         }
+
+        queryClient.invalidateQueries({ queryKey: ['peers'] })
+        setDialogOpen(false);
     }
 
     function handleClickEject() {
         if (peer.is_connected) {
-            handleDisconnectPeer()
+            setConfirmMessage("Are you sure you want to disconnect this peer?");
+            setDialogOpen(true);
         } else {
-            handleDeletePeer()
+            setConfirmMessage("Are you sure you want to delete this peer?");
+            setDialogOpen(true);
         }
     }
 
@@ -62,6 +58,7 @@ function SinglePeer({ peer }: { peer: MutinyPeer }) {
                 </div>
                 <button onClick={handleClickEject} className="h-[3rem] w-[3rem] p-1 flex items-center justify-center flex-0"><EjectIcon /></button>
             </div>
+            <ConfirmDialog open={dialogOpen} message={confirmMessage} onCancel={() => setDialogOpen(false)} onConfirm={confirmPeerAction} />
         </li>
     )
 }
